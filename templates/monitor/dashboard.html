@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Mind Check</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f0efeb;
+            --surface: #ffffff;
+            --surface2: #f5f4f0;
+            --border: rgba(0,0,0,0.08);
+            --accent: #2d6a4f;
+            --accent-light: #eaf7ef;
+            --accent2: #52b788;
+            --text: #111111;
+            --muted: #777777;
+            --muted2: #aaaaaa;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid rgba(0,0,0,0.07);
+            padding: 28px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 0 8px;
+            margin-bottom: 36px;
+        }
+
+        .brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 18px;
+            color: #111;
+            letter-spacing: -0.3px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar-tagline {
+            font-size: 11px;
+            color: var(--muted2);
+            margin-top: 3px;
+            letter-spacing: 0.4px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item,
+        .sidebar-logout button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+            text-decoration: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .nav-item:hover,
+        .sidebar-logout button:hover {
+            background: var(--surface2);
+            color: #111111;
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-svg {
+            width: 17px;
+            height: 17px;
+            flex: 0 0 17px;
+        }
+
+        .sidebar-logout {
+            margin-top: auto;
+        }
+
+        .sidebar-logout button {
+            color: var(--muted2);
+        }
+
+        .sidebar-logout button:hover {
+            color: #c0392b;
+            background: #fdf0ef;
+        }
+
+        .main-content {
+            margin-left: 220px;
+            flex: 1;
+            padding: 48px;
+            background: var(--bg);
+            min-height: 100vh;
+        }
+
+        .dashboard-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 34px;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            margin: 0 0 6px;
+        }
+
+        .dashboard-subtext {
+            font-size: 15px;
+            color: #888888;
+            margin: 0 0 40px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 16px;
+            padding: 28px 32px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .metric-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .metric-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted2);
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .metric-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 38px;
+            color: var(--text);
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 16px;
+            padding: 28px 32px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-head h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .section-subtext {
+            font-size: 12px;
+            color: var(--muted2);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.07);
+            background: #ffffff;
+            font-size: 13px;
+            color: #333;
+            cursor: default;
+            transition: border-color 0.15s;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+        .calendar-day:hover:not(.calendar-day.inactive) {
+            border-color: rgba(45,106,79,0.3);
+        }
+
+        .calendar-day.inactive {
+            color: #cccccc;
+            border-color: transparent;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .calendar-day.is-today {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .calendar-day-number {
+            display: block;
+        }
+
+        .calendar-day-mood {
+            font-size: 9px;
+            color: var(--accent);
+            margin-top: 2px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .emotion-distribution-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .donut-container {
+            width: 100%;
+            max-width: 240px;
+            height: 240px;
+            margin: 0 auto 24px;
+        }
+
+        .emotion-legend {
+            width: 100%;
+        }
+
+        .emotion-item {
+            margin-bottom: 14px;
+        }
+
+        .emotion-item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .emotion-item-header span:first-child {
+            font-size: 14px;
+            color: #444;
+            flex: 1;
+        }
+
+        .emotion-item-header span:last-child {
+            font-size: 13px;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .emotion-item-bar {
+            flex: 2;
+            height: 5px;
+            background: var(--bg);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .emotion-item-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #52b788, #2d6a4f);
+        }
+
+        .trend-card {
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 16px;
+            padding: 28px 32px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .trend-canvas {
+            max-width: 100%;
+            height: 220px;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 99px; }
+
+        @media (max-width: 1180px) {
+            .main-content { padding: 30px; }
+            .content-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 940px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(0,0,0,0.07);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a class="brand" href="{% url 'dashboard' %}">MindCheck</a>
+            <p class="sidebar-tagline">Emotional Analytics</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'journal' %}" class="nav-item {% if request.path == '/journal/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6.5C4 5.67 4.67 5 5.5 5H11V19H5.5C4.67 19 4 18.33 4 17.5V6.5Z" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M20 6.5C20 5.67 19.33 5 18.5 5H13V19H18.5C19.33 19 20 18.33 20 17.5V6.5Z" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Journal</span>
+            </a>
+            <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="14" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="4" y="14" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="14" y="14" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'history' %}" class="nav-item {% if request.path|slice:':9' == '/history/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M12 8V12L14.8 13.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>History</span>
+            </a>
+            <a href="{% url 'insights' %}" class="nav-item {% if request.path == '/insights/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 16L9 11L12.5 14.5L19.5 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 7.5H19.5V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Insights</span>
+            </a>
+            <a href="{% url 'settings' %}" class="nav-item {% if request.path == '/settings/' or request.path == '/profile/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.4 4.6L10.1 3H13.9L14.6 4.6L16.4 5.2L18 4.5L20.7 7.2L20 8.8L20.6 10.6L22.2 11.3V15.1L20.6 15.8L20 17.6L20.7 19.2L18 21.9L16.4 21.2L14.6 21.8L13.9 23.4H10.1L9.4 21.8L7.6 21.2L6 21.9L3.3 19.2L4 17.6L3.4 15.8L1.8 15.1V11.3L3.4 10.6L4 8.8L3.3 7.2L6 4.5L7.6 5.2L9.4 4.6Z" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="12" cy="13.2" r="3" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <form action="{% url 'logout' %}" method="post" class="sidebar-logout">
+            {% csrf_token %}
+            <button type="submit" class="nav-item">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 6H5V18H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M14 8L19 12L14 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 12H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>Logout</span>
+            </button>
+        </form>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-wrap">
+            <section class="dashboard-header">
+                <h1>Analytics Overview</h1>
+                <p class="dashboard-subtext">Your emotional trends and journaling patterns</p>
+            </section>
+
+            <section class="metrics-grid">
+                <article class="metric-card">
+                    <div class="metric-label">TOTAL ENTRIES</div>
+                    <div class="metric-value">{{ total_entries }}</div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-label">POSITIVE RATIO</div>
+                    <div class="metric-value">{{ positive_ratio }}%</div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-label">CURRENT STREAK</div>
+                    <div class="metric-value">{{ streak }} days</div>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <article class="card">
+                    <div class="section-head">
+                        <h2>Monthly Overview – {{ month }} {{ year }}</h2>
+                    </div>
+                    <div class="calendar-grid">
+                        {% for week in month_days %}
+                            {% for day in week %}
+                                {% if day.in_month %}
+                                    <a href="{% url 'history_by_date' day.date_str %}" class="calendar-day {% if day.is_today %}is-today{% endif %} {% if day.emotion == 'Happiness' %}positive{% elif day.emotion == 'Sadness' or day.emotion == 'Fear' or day.emotion == 'Anger' or day.emotion == 'Anxiety' %}negative{% else %}neutral{% endif %}">
+                                        <span class="calendar-day-number">{{ day.day_number }}</span>
+                                        {% if day.emotion %}
+                                            <span class="calendar-day-mood">{{ day.emotion }}</span>
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <div class="calendar-day inactive">
+                                        <span class="calendar-day-number">{{ day.day_number }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="section-head">
+                        <h2>Emotion Distribution</h2>
+                        <span class="section-subtext">Counts & percentages</span>
+                    </div>
+                    <div class="emotion-distribution-wrapper">
+                        <div class="donut-container">
+                            <canvas id="emotionChart"></canvas>
+                        </div>
+                        <div class="emotion-legend">
+                            {% for row in emotion_counts %}
+                                <div class="emotion-item">
+                                    <div class="emotion-item-header">
+                                        <span>{{ row.emotion }}</span>
+                                        <span>{{ row.percent }}%</span>
+                                    </div>
+                                    <div class="emotion-item-bar">
+                                        <div class="emotion-item-fill" style="width: {{ row.percent }}%;"></div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p class="dashboard-subtext">No emotion data yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="trend-card">
+                <div class="section-head">
+                    <h2>Weekly Emotion Trend</h2>
+                </div>
+                <canvas id="trendChart" class="trend-canvas"></canvas>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Muted, premium color palette for emotions
+        const emotionColors = {
+            'Happiness': '#9CA8A8',        // Soft muted green-gray
+            'Sadness': '#A89080',          // Muted earthy brown
+            'Neutral': '#7D8FA3',          // Cool gray-blue
+            'Anger': '#A47C7C',            // Soft desaturated red
+            'Fear': '#5A7A8C',             // Soft slate blue
+            'Anxiety': '#9A7FA8',          // Muted lavender
+        };
+
+        // Emotion Distribution Donut Chart
+        const emotionChartCanvas = document.getElementById('emotionChart');
+        if (emotionChartCanvas) {
+            // Prepare data from template context
+            const emotionData = {{ emotion_counts|safe }};
+            const labels = emotionData.map(e => e.emotion);
+            const counts = emotionData.map(e => e.count);
+            const colors = labels.map(label => emotionColors[label] || '#9CA3AF');
+
+            new Chart(emotionChartCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: colors,
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // Weekly Emotion Trend Line Chart
+        const trendChartCanvas = document.getElementById('trendChart');
+        if (trendChartCanvas) {
+            new Chart(trendChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#4A90E2',
+                        borderWidth: 1.5,
+                        pointRadius: 2,
+                        tension: 0.25,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

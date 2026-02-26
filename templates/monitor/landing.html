@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCheck | AI-Based Mental Health Monitoring System</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0efeb;
+            color: #111111;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            padding: 0 36px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background: rgba(240, 239, 235, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            z-index: 100;
+        }
+
+        .wordmark {
+            font-family: 'DM Serif Display', serif;
+            font-size: 18px;
+            color: #111;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+        }
+
+        .hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(82, 183, 136, 0.1) 0%, transparent 65%);
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 660px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.09);
+            border-radius: 999px;
+            padding: 7px 18px;
+            font-size: 13.5px;
+            color: #555555;
+            font-weight: 500;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 36px;
+            animation: fadeDown 0.6s ease both;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            background: #52b788;
+            border-radius: 50%;
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(46px, 7vw, 72px);
+            line-height: 1.08;
+            letter-spacing: -1.5px;
+            margin: 0 0 22px;
+            animation: fadeUp 0.6s ease 0.1s both;
+        }
+
+        .line-one {
+            color: #111111;
+            display: block;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: #2d6a4f;
+        }
+
+        .subtext {
+            font-size: 17px;
+            color: #777777;
+            line-height: 1.7;
+            font-weight: 400;
+            max-width: 460px;
+            margin: 0 auto 44px;
+            animation: fadeUp 0.6s ease 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeUp 0.6s ease 0.3s both;
+        }
+
+        .btn-primary {
+            background: #2d6a4f;
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #255c43;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(45, 106, 79, 0.28);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #222222;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-family: 'DM Sans', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f4f0;
+            border-color: rgba(0, 0, 0, 0.18);
+            transform: translateY(-1px);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="{% url 'landing' %}" class="wordmark">MindCheck</a>
+    </header>
+
+    <section class="hero">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-inner">
+            <div class="badge">
+                <span class="badge-dot" aria-hidden="true"></span>
+                <span>AI-Powered Emotional Intelligence Platform</span>
+            </div>
+
+            <h1>
+                <span class="line-one">Understand your mind,</span>
+                <em>before it drifts.</em>
+            </h1>
+
+            <p class="subtext">
+                MindCheck monitors your emotional patterns daily — giving you clarity, insights, and control over your mental wellness.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="{% url 'register' %}" class="btn-primary">Get Started Free →</a>
+                <a href="{% url 'login' %}" class="btn-secondary">Sign In</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+    </script>
+</body>
+</html>

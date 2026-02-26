@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Mind Check</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0efeb;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            color: #111;
+        }
+
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid rgba(0,0,0,0.07);
+            padding: 28px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 0 8px;
+            margin-bottom: 36px;
+        }
+
+        .brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 18px;
+            color: #111;
+            letter-spacing: -0.3px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar-tagline {
+            font-size: 11px;
+            color: #aaaaaa;
+            margin-top: 3px;
+            letter-spacing: 0.4px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item,
+        .sidebar-logout button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+            text-decoration: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .nav-item:hover,
+        .sidebar-logout button:hover {
+            background: #f5f4f0;
+            color: #111111;
+        }
+
+        .nav-item.active {
+            background: #eaf7ef;
+            color: #2d6a4f;
+            font-weight: 600;
+        }
+
+        .nav-svg {
+            width: 17px;
+            height: 17px;
+            flex: 0 0 17px;
+        }
+
+        .sidebar-logout {
+            margin-top: auto;
+        }
+
+        .sidebar-logout button {
+            color: #aaaaaa;
+        }
+
+        .sidebar-logout button:hover {
+            color: #c0392b;
+            background: #fdf0ef;
+        }
+
+        .main-content {
+            margin-left: 220px;
+            flex: 1;
+            padding: 48px;
+            background: #f0efeb;
+            min-height: 100vh;
+        }
+
+        .page-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 34px;
+            color: #111;
+            letter-spacing: -0.5px;
+            margin: 0 0 32px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .left-card,
+        .right-card {
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .left-card {
+            padding: 36px;
+        }
+
+        .right-col {
+            display: grid;
+            gap: 16px;
+        }
+
+        .right-card {
+            padding: 28px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #111;
+            margin: 0 0 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .preferences-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #111;
+            margin: 32px 0 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .app-form p {
+            margin: 0 0 20px;
+        }
+
+        .app-form label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .app-form input[type="text"],
+        .app-form input[type="email"] {
+            width: 100%;
+            padding: 11px 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            background: #fafaf8;
+            color: #111;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .app-form input[type="text"]:focus,
+        .app-form input[type="email"]:focus {
+            border-color: #2d6a4f;
+            box-shadow: 0 0 0 3px rgba(45,106,79,0.08);
+            background: #ffffff;
+        }
+
+        .preference-fields p {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            margin: 0;
+        }
+
+        .preference-fields p:last-child {
+            border-bottom: none;
+        }
+
+        .preference-fields label {
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .preference-fields input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2d6a4f;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 12px;
+        }
+
+        .btn-primary {
+            margin-top: 28px;
+            padding: 12px 28px;
+            background: #2d6a4f;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #255c43;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(45,106,79,0.25);
+        }
+
+        .right-card h2,
+        .right-card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 0 0 8px;
+            color: #111;
+        }
+
+        .right-card h3 {
+            color: #c0392b;
+        }
+
+        .muted {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+            margin: 0 0 20px;
+        }
+
+        .right-card:last-child .muted {
+            color: #999;
+        }
+
+        .btn-secondary.full,
+        .btn-danger.full {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-secondary.full {
+            background: #f5f4f0;
+            color: #333;
+            border: 1px solid rgba(0,0,0,0.09);
+        }
+
+        .btn-secondary.full:hover {
+            background: #eeecea;
+            border-color: rgba(0,0,0,0.15);
+        }
+
+        .btn-danger.full {
+            background: #fdf0ef;
+            color: #c0392b;
+            border: 1px solid rgba(192,57,43,0.2);
+        }
+
+        .btn-danger.full:hover {
+            background: #fdecea;
+            border-color: rgba(192,57,43,0.4);
+        }
+
+        .stack-form {
+            margin: 0;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            background: #eaf7ef;
+            border: 1px solid rgba(45,106,79,0.2);
+            color: #2d6a4f;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 99px; }
+
+        @media (max-width: 1080px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 980px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(0,0,0,0.07);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 26px 18px;
+            }
+
+            .left-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a class="brand" href="{% url 'dashboard' %}">MindCheck</a>
+            <p class="sidebar-tagline">Emotional Analytics</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'journal' %}" class="nav-item {% if request.path == '/journal/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6.5C4 5.67 4.67 5 5.5 5H11V19H5.5C4.67 19 4 18.33 4 17.5V6.5Z" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M20 6.5C20 5.67 19.33 5 18.5 5H13V19H18.5C19.33 19 20 18.33 20 17.5V6.5Z" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Journal</span>
+            </a>
+            <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="14" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="4" y="14" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="14" y="14" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'history' %}" class="nav-item {% if request.path|slice:':9' == '/history/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M12 8V12L14.8 13.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>History</span>
+            </a>
+            <a href="{% url 'insights' %}" class="nav-item {% if request.path == '/insights/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 16L9 11L12.5 14.5L19.5 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 7.5H19.5V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Insights</span>
+            </a>
+            <a href="{% url 'settings' %}" class="nav-item {% if request.path == '/settings/' or request.path == '/profile/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.4 4.6L10.1 3H13.9L14.6 4.6L16.4 5.2L18 4.5L20.7 7.2L20 8.8L20.6 10.6L22.2 11.3V15.1L20.6 15.8L20 17.6L20.7 19.2L18 21.9L16.4 21.2L14.6 21.8L13.9 23.4H10.1L9.4 21.8L7.6 21.2L6 21.9L3.3 19.2L4 17.6L3.4 15.8L1.8 15.1V11.3L3.4 10.6L4 8.8L3.3 7.2L6 4.5L7.6 5.2L9.4 4.6Z" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="12" cy="13.2" r="3" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <form action="{% url 'logout' %}" method="post" class="sidebar-logout">
+            {% csrf_token %}
+            <button type="submit" class="nav-item">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 6H5V18H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M14 8L19 12L14 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 12H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>Logout</span>
+            </button>
+        </form>
+    </aside>
+
+    <main class="main-content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="page-header">
+            <h1>Settings</h1>
+        </section>
+
+        <section class="settings-grid">
+            <article class="left-card">
+                <h2 class="section-title">Profile</h2>
+                <form method="post" class="app-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save">
+                    {{ profile_form.as_p }}
+
+                    <h3 class="preferences-title">Preferences</h3>
+                    <div class="preference-fields">
+                        {{ preference_form.as_p }}
+                    </div>
+
+                    <button type="submit" class="btn-primary">Save Settings</button>
+                </form>
+            </article>
+
+            <div class="right-col">
+                <article class="right-card">
+                    <h2>Data Controls</h2>
+                    <p class="muted">Export your journal data for further analysis.</p>
+                    <form method="post" class="stack-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="export">
+                        <button type="submit" class="btn-secondary full">Export Data (CSV)</button>
+                    </form>
+                </article>
+
+                <article class="right-card">
+                    <h3>Delete Account</h3>
+                    <p class="muted">This action permanently removes your account and journal history.</p>
+                    <form method="post" class="stack-form" onsubmit="return confirm('Delete your account permanently?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete_account">
+                        <button type="submit" class="btn-danger full">Delete Account</button>
+                    </form>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

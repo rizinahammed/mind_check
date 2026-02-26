@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History | Mind Check</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0efeb;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            color: #111;
+        }
+
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid rgba(0,0,0,0.07);
+            padding: 28px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 0 8px;
+            margin-bottom: 36px;
+        }
+
+        .brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 18px;
+            color: #111;
+            letter-spacing: -0.3px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar-tagline {
+            font-size: 11px;
+            color: #aaaaaa;
+            margin-top: 3px;
+            letter-spacing: 0.4px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item,
+        .sidebar-logout button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+            text-decoration: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .nav-item:hover,
+        .sidebar-logout button:hover {
+            background: #f5f4f0;
+            color: #111111;
+        }
+
+        .nav-item.active {
+            background: #eaf7ef;
+            color: #2d6a4f;
+            font-weight: 600;
+        }
+
+        .nav-svg {
+            width: 17px;
+            height: 17px;
+            flex: 0 0 17px;
+        }
+
+        .sidebar-logout {
+            margin-top: auto;
+        }
+
+        .sidebar-logout button {
+            color: #aaaaaa;
+        }
+
+        .sidebar-logout button:hover {
+            color: #c0392b;
+            background: #fdf0ef;
+        }
+
+        .main-content {
+            margin-left: 220px;
+            flex: 1;
+            padding: 48px;
+            background: #f0efeb;
+            min-height: 100vh;
+        }
+
+        .history-header {
+            margin-bottom: 32px;
+        }
+
+        .history-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 34px;
+            color: #111;
+            letter-spacing: -0.5px;
+            margin: 0 0 6px;
+        }
+
+        .history-header p {
+            font-size: 15px;
+            color: #888;
+            margin: 0;
+        }
+
+        .history-header p a {
+            color: #2d6a4f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .history-header p a:hover {
+            text-decoration: underline;
+        }
+
+        .filter-card {
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .search-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .search-row input[type="text"],
+        .search-row select,
+        .search-row input[type="date"] {
+            padding: 11px 16px;
+            border: 1px solid rgba(0,0,0,0.09);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            background: #fafaf8;
+            color: #111;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-row input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-row select {
+            min-width: 150px;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .search-row input[type="date"] {
+            flex: 1;
+            color: #555;
+        }
+
+        .search-row input[type="text"]::placeholder {
+            color: #bbb;
+        }
+
+        .search-row input[type="text"]:focus,
+        .search-row select:focus,
+        .search-row input[type="date"]:focus {
+            border-color: #2d6a4f;
+            box-shadow: 0 0 0 3px rgba(45,106,79,0.08);
+        }
+
+        .btn-secondary {
+            padding: 11px 28px;
+            background: #2d6a4f;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-secondary:hover {
+            background: #255c43;
+            transform: translateY(-1px);
+        }
+
+        .history-scroll {
+            display: grid;
+            gap: 10px;
+        }
+
+        .history-card {
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 12px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            transition: box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .history-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            transform: translateY(-1px);
+        }
+
+        .history-main {
+            flex: 1;
+        }
+
+        .history-main p {
+            font-size: 15px;
+            font-weight: 500;
+            color: #111;
+            margin: 0 0 10px;
+            line-height: 1.5;
+        }
+
+        .history-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            display: inline-flex;
+            padding: 3px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #f5f4f0;
+            color: #666;
+        }
+
+        .pill.happiness {
+            background: #eaf7ef;
+            color: #2d6a4f;
+        }
+
+        .pill.anger {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .pill.sadness {
+            background: #e8f0fe;
+            color: #3a5fc8;
+        }
+
+        .history-meta span:not(.pill) {
+            font-size: 13px;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        .history-meta span:last-child {
+            color: #bbb;
+            font-weight: 400;
+        }
+
+        .delete-form {
+            flex-shrink: 0;
+        }
+
+        .delete-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.09);
+            background: transparent;
+            color: #ccc;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #fdecea;
+            border-color: #c0392b;
+            color: #c0392b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #888;
+            margin: 0 0 16px;
+            line-height: 1.6;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: #2d6a4f;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .empty-state a:hover {
+            background: #255c43;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 99px; }
+
+        @media (max-width: 980px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(0,0,0,0.07);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 26px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a class="brand" href="{% url 'dashboard' %}">MindCheck</a>
+            <p class="sidebar-tagline">Emotional Analytics</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'journal' %}" class="nav-item {% if request.path == '/journal/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6.5C4 5.67 4.67 5 5.5 5H11V19H5.5C4.67 19 4 18.33 4 17.5V6.5Z" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M20 6.5C20 5.67 19.33 5 18.5 5H13V19H18.5C19.33 19 20 18.33 20 17.5V6.5Z" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Journal</span>
+            </a>
+            <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="14" y="4" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="4" y="14" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="14" y="14" width="6" height="6" rx="1.3" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'history' %}" class="nav-item {% if request.path|slice:':9' == '/history/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M12 8V12L14.8 13.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>History</span>
+            </a>
+            <a href="{% url 'insights' %}" class="nav-item {% if request.path == '/insights/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 16L9 11L12.5 14.5L19.5 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 7.5H19.5V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Insights</span>
+            </a>
+            <a href="{% url 'settings' %}" class="nav-item {% if request.path == '/settings/' or request.path == '/profile/' %}active{% endif %}">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.4 4.6L10.1 3H13.9L14.6 4.6L16.4 5.2L18 4.5L20.7 7.2L20 8.8L20.6 10.6L22.2 11.3V15.1L20.6 15.8L20 17.6L20.7 19.2L18 21.9L16.4 21.2L14.6 21.8L13.9 23.4H10.1L9.4 21.8L7.6 21.2L6 21.9L3.3 19.2L4 17.6L3.4 15.8L1.8 15.1V11.3L3.4 10.6L4 8.8L3.3 7.2L6 4.5L7.6 5.2L9.4 4.6Z" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="12" cy="13.2" r="3" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <form action="{% url 'logout' %}" method="post" class="sidebar-logout">
+            {% csrf_token %}
+            <button type="submit" class="nav-item">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 6H5V18H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M14 8L19 12L14 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 12H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>Logout</span>
+            </button>
+        </form>
+    </aside>
+
+    <main class="main-content">
+        <section class="history-header">
+            {% if selected_date %}
+                <h1>Entries for {{ selected_date|date:"F d, Y" }}</h1>
+                <p><a href="{% url 'history' %}">← View all entries</a></p>
+            {% else %}
+                <h1>Journal History</h1>
+                <p>All your journal entries and emotional records</p>
+            {% endif %}
+        </section>
+
+        <section>
+            {% if not selected_date %}
+            <div class="filter-card">
+                <form method="get" class="search-row">
+                    <input type="text" name="q" value="{{ query }}" placeholder="Search reflections...">
+                    <select name="emotion">
+                        <option value="">All emotions</option>
+                        {% for value, label in emotion_choices %}
+                            <option value="{{ value }}" {% if emotion == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="date" name="date" value="{{ date }}">
+                    <button type="submit" class="btn-secondary">Filter</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="history-scroll">
+                {% if entries %}
+                    {% for entry in entries %}
+                        <article class="history-card">
+                            <div class="history-main">
+                                <p>{{ entry.content|truncatechars:220 }}</p>
+                                <div class="history-meta">
+                                    {% if entry.emotion_result %}
+                                        <span class="pill {{ entry.emotion_result.emotion|lower }}">{{ entry.emotion_result.emotion }}</span>
+                                        <span>{{ entry.emotion_result.confidence_percent }}%</span>
+                                    {% else %}
+                                        <span class="pill neutral">Pending</span>
+                                    {% endif %}
+                                    <span>{{ entry.created_at|date:'M d, Y H:i' }}</span>
+                                </div>
+                            </div>
+                            <form method="post" class="delete-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                                <button type="submit" class="delete-btn" title="Delete">×</button>
+                            </form>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        {% if selected_date %}
+                            <p>No entries recorded for <strong>{{ selected_date|date:"F d, Y" }}</strong></p>
+                            <p style="font-size: 13px;">Start a new journal entry to record your thoughts and emotions for this day.</p>
+                            <a href="{% url 'journal' %}">+ New Entry</a>
+                        {% else %}
+                            <p>No history entries matched your search.</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>
